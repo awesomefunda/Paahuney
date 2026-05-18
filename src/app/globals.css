@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+:root {
+  --saffron: #FF9933;
+  --saffron-light: #FFF3E0;
+  --green-india: #138808;
+  --navy: #1a1f5e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background-color: #fafaf8;
+}
