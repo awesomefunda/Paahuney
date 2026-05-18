@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Resource, ResourceCategory } from '@/types';
-import { Shield, Heart, Phone, Building2, CheckSquare, Bus, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Shield, Heart, Phone, Building2, CheckSquare, Bus, Plane, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 
 const CATEGORIES: { value: ResourceCategory; label: string; icon: React.ReactNode; color: string }[] = [
   { value: 'insurance', label: 'Visitor Insurance', icon: <Shield size={18}/>, color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { value: 'flight_companion', label: 'Flight Companion', icon: <Plane size={18}/>, color: 'bg-sky-50 text-sky-700 border-sky-200' },
   { value: 'healthcare', label: 'Healthcare', icon: <Heart size={18}/>, color: 'bg-red-50 text-red-700 border-red-200' },
   { value: 'emergency', label: 'Emergency Contacts', icon: <Phone size={18}/>, color: 'bg-orange-50 text-orange-700 border-orange-200' },
   { value: 'consulate', label: 'Consulate Services', icon: <Building2 size={18}/>, color: 'bg-purple-50 text-purple-700 border-purple-200' },
@@ -56,11 +57,45 @@ const MOCK_RESOURCES: Resource[] = [
   },
   {
     id: '6', category: 'healthcare', order_index: 1, created_at: '',
-    title: 'Finding Indian Doctors in Bay Area',
-    content: 'Many South Asian parents feel more comfortable with Indian doctors. Use Zocdoc or WebMD to filter by physician name. Large concentrations in Fremont, Milpitas, Sunnyvale, and Santa Clara. For urgent needs, most Urgent Care centers accept walk-ins without insurance.',
+    title: 'Finding Doctors Who Accept Visitor Insurance',
+    content: 'Not all doctors accept visitor/travel insurance — always call ahead and confirm before booking. When calling, say: "I have visitor health insurance from [plan name]. Do you accept it as out-of-network?" Most visitor insurance plans work on a reimbursement basis: you pay upfront, then submit a claim. Keep all receipts and itemized bills.\n\nFor urgent but non-emergency situations, Urgent Care centers (not ERs) are far cheaper. Urgent Care visits typically cost $100–200 vs. $3,000+ at an ER.\n\nTip: Your insurance provider\'s member portal or 24/7 helpline can recommend in-network providers near you.',
     links: [
-      { label: 'Zocdoc – Find Doctors', url: 'https://www.zocdoc.com' },
-      { label: 'WebMD Doctor Finder', url: 'https://doctor.webmd.com' },
+      { label: 'Find Urgent Care – Solv Health', url: 'https://www.solvhealth.com' },
+      { label: 'Zocdoc – Filter by Insurance', url: 'https://www.zocdoc.com' },
+      { label: 'Insubuy – Claim Filing Help', url: 'https://www.insubuy.com/visitors-insurance-claims/' },
+    ],
+  },
+  {
+    id: '7', category: 'flight_companion', order_index: 1, created_at: '',
+    title: 'Why Parents Need a Travel Companion',
+    content: 'Long-haul flights from India to the US (typically 18–22 hours with a layover) are overwhelming for elderly parents — especially first-timers. Common challenges:\n\n• Navigating large connecting airports (Dubai, London Heathrow, Frankfurt, Doha) alone\n• Filling immigration/customs forms in English\n• Finding the right gate during a tight layover\n• Communicating with airline staff who don\'t speak Hindi/Telugu/Punjabi\n• Boarding the right connecting flight without missing it\n\nA co-traveler on the same or similar itinerary — even a fellow passenger willing to help — can make an enormous difference.',
+    links: [],
+  },
+  {
+    id: '8', category: 'flight_companion', order_index: 2, created_at: '',
+    title: 'Where to Find a Travel Companion',
+    content: 'These platforms connect families looking for co-travelers on India–USA routes:\n\n• ImmiHelp TravBuddy — post your parent\'s travel dates and route; matched with travelers on the same legs\n• Path2USA Travel Companion — free listings, large Indian diaspora community\n• Facebook Groups — search "India to USA travel companion [year]", "Bay Area desi parents", or city-specific NRI groups\n• r/ABCDesis and r/India on Reddit — post your parent\'s route and dates\n• Local temple WhatsApp groups — often the fastest way; someone in your community is likely flying the same route\n\nAlways verify the companion\'s identity before travel. Share details only with people vouched for by your community.',
+    links: [
+      { label: 'ImmiHelp TravBuddy', url: 'https://www.immihelp.com/travel-companion/' },
+      { label: 'Path2USA Travel Companion', url: 'https://www.path2usa.com/travel-companion/' },
+    ],
+  },
+  {
+    id: '9', category: 'flight_companion', order_index: 3, created_at: '',
+    title: 'Airline Assistance Services (Free)',
+    content: 'All major airlines offer free assistance for elderly and mobility-limited passengers — but you must request it at booking or at least 48 hours before departure.\n\n✈️ Wheelchair service — door-to-gate, gate-to-gate, and gate-to-baggage claim\n✈️ Meet & Assist — airline staff escorts your parent through connections, immigration, and customs\n✈️ UM/Adult assist (varies by airline) — some carriers extend unaccompanied minor-style escort to elderly adults for a fee\n\nCall the airline directly after booking to add these. Air India, Emirates, Etihad, Qatar Airways, and United all offer these services on India–USA routes.\n\nAlso ask the travel agent or ticketing office in India to add "WCHR" (wheelchair ramp) or "WCHC" (wheelchair cabin) to the booking.',
+    links: [
+      { label: 'Air India Special Assistance', url: 'https://www.airindia.in/special-assistance.htm' },
+      { label: 'Emirates Special Assistance', url: 'https://www.emirates.com/us/english/before-you-fly/special-needs/' },
+      { label: 'United Airlines Special Needs', url: 'https://www.united.com/en/us/fly/travel/special-needs.html' },
+    ],
+  },
+  {
+    id: '10', category: 'flight_companion', order_index: 4, created_at: '',
+    title: 'Tips for a Smooth Transit',
+    content: 'Prepare these before your parent boards:\n\n📄 Print a one-page cheat sheet with: their name, your phone number, connecting flight number, gate info, and "I need help, please call my son/daughter" in English\n📱 Set up WhatsApp with location sharing so you can track them during transit\n🏷️ Attach a luggage tag with your US address and phone number\n⏰ Book layovers of at least 2–3 hours — elderly passengers take longer to deplane and transit\n🛂 CBP (US customs) has translators available — your parent can ask for one\n💊 Keep all medications in carry-on, labeled in English with prescription info\n\nFor parents who don\'t speak English, write their destination city, your address, and your phone number on a card they can show to airline staff.',
+    links: [
+      { label: 'CBP Traveler Information', url: 'https://www.cbp.gov/travel/international-visitors' },
     ],
   },
 ];
@@ -100,7 +135,7 @@ export default function ResourcesPage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">📚 Resource Hub</h1>
-        <p className="text-gray-500">Everything you need to prepare for your parents' visit — insurance, healthcare, emergency contacts, and more.</p>
+        <p className="text-gray-500">Everything you need to prepare for your parents' visit — insurance, flight companions, healthcare, emergency contacts, and more.</p>
       </div>
 
       {/* Category tabs */}

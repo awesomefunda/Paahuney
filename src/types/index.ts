@@ -15,7 +15,8 @@ export type ResourceCategory =
   | 'emergency'
   | 'consulate'
   | 'checklist'
-  | 'transportation';
+  | 'transportation'
+  | 'flight_companion';
 
 export interface Place {
   id: string;
@@ -31,6 +32,7 @@ export interface Place {
   vegetarian_friendly: boolean;
   best_time?: string;
   accessibility_notes?: string;
+  languages_spoken?: string[];
   source_url?: string;
   is_verified: boolean;
   created_at: string;

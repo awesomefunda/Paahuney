@@ -1,8 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { createClient } from '@/lib/supabase/client';
 import type { Place, PlaceCategory, MobilityLevel } from '@/types';
-import { MapPin, Leaf, Accessibility, Clock, ExternalLink, Filter } from 'lucide-react';
+import { MapPin, Leaf, Accessibility, Clock, ExternalLink, Filter, LayoutList, Map } from 'lucide-react';
+
+const MapView = dynamic(() => import('@/components/MapView'), { ssr: false });
 
 const CATEGORIES: { value: PlaceCategory | 'all'; label: string; emoji: string }[] = [
   { value: 'all', label: 'All', emoji: '✨' },
@@ -22,28 +25,33 @@ const MOBILITY: { value: MobilityLevel | 'all'; label: string; color: string }[]
   { value: 'active', label: '🔴 Active', color: 'bg-red-100 text-red-700' },
 ];
 
+const LANGUAGES = ['All languages', 'Hindi', 'Telugu', 'Punjabi', 'Tamil', 'Gujarati', 'Kannada', 'Marathi', 'Bengali'];
+
 const MOBILITY_BADGE: Record<MobilityLevel, string> = {
   easy: 'bg-green-100 text-green-700',
   moderate: 'bg-yellow-100 text-yellow-700',
   active: 'bg-red-100 text-red-700',
 };
 
-// Fallback mock data for when Supabase isn't configured yet
+// Fallback mock data — used when Supabase is not yet configured
 const MOCK_PLACES: Place[] = [
   {
     id: '1', name: 'Fremont Hindu Temple (Shiva-Vishnu)', category: 'temple',
     description: 'One of the largest Hindu temples in the Bay Area with beautiful architecture and regular puja ceremonies.',
     address: '1232 Arrowhead Ave, Fremont, CA 94536', city: 'Fremont',
+    lat: 37.5485, lng: -121.9886,
     google_maps_url: 'https://maps.google.com/?q=Fremont+Hindu+Temple',
     mobility_level: 'easy', vegetarian_friendly: true,
     best_time: 'Weekday mornings for fewer crowds',
     accessibility_notes: 'Paved parking, accessible entrance, seating available',
+    languages_spoken: ['Hindi', 'Kannada', 'Telugu', 'Tamil'],
     is_verified: true, source_url: '', created_at: '', updated_at: '',
   },
   {
     id: '2', name: 'Lake Elizabeth (Central Park Fremont)', category: 'nature',
-    description: 'Beautiful 72-acre lake with paved walking paths perfect for morning strolls.',
+    description: 'Beautiful 72-acre lake with fully paved walking paths. Perfect for morning strolls with visiting parents.',
     address: '40204 Paseo Padre Pkwy, Fremont, CA 94538', city: 'Fremont',
+    lat: 37.5537, lng: -121.9824,
     google_maps_url: 'https://maps.google.com/?q=Lake+Elizabeth+Fremont',
     mobility_level: 'easy', vegetarian_friendly: false,
     best_time: 'Morning 7–10am; avoid peak afternoon heat',
@@ -54,36 +62,43 @@ const MOCK_PLACES: Place[] = [
     id: '3', name: 'India Community Center – Senior Programs', category: 'senior_group',
     description: 'Senior yoga, cultural events, language classes, and social gatherings designed for Indian seniors.',
     address: '525 Los Coches St, Milpitas, CA 95035', city: 'Milpitas',
+    lat: 37.4318, lng: -121.9129,
     google_maps_url: 'https://maps.google.com/?q=India+Community+Center+Milpitas',
     mobility_level: 'easy', vegetarian_friendly: true,
     best_time: 'Check ICC calendar for senior program days',
     accessibility_notes: 'Fully accessible facility, parking available, AC',
+    languages_spoken: ['Hindi', 'Gujarati', 'Telugu', 'Tamil'],
     is_verified: true, source_url: '', created_at: '', updated_at: '',
   },
   {
     id: '4', name: 'ISKCON Silicon Valley', category: 'temple',
-    description: 'Hare Krishna temple with daily arati, delicious prasad, and a welcoming community.',
+    description: 'Hare Krishna temple with daily arati, delicious prasad, and a welcoming community for all ages.',
     address: '1235 Persian Dr, Sunnyvale, CA 94089', city: 'Sunnyvale',
+    lat: 37.4089, lng: -122.0175,
     google_maps_url: 'https://maps.google.com/?q=ISKCON+Silicon+Valley',
     mobility_level: 'easy', vegetarian_friendly: true,
     best_time: 'Sunday feast at 5pm is especially lively',
     accessibility_notes: 'Flat terrain, wheelchair accessible, free parking',
+    languages_spoken: ['Hindi', 'Gujarati', 'Telugu', 'Bengali'],
     is_verified: true, source_url: '', created_at: '', updated_at: '',
   },
   {
     id: '5', name: 'Udupi Palace', category: 'restaurant',
-    description: 'Authentic South Indian vegetarian restaurant. Dosas, idlis, thalis.',
+    description: 'Authentic South Indian vegetarian restaurant. Dosas, idlis, thalis — all familiar tastes from home.',
     address: '976 E El Camino Real, Sunnyvale, CA 94087', city: 'Sunnyvale',
+    lat: 37.3689, lng: -122.0205,
     google_maps_url: 'https://maps.google.com/?q=Udupi+Palace+Sunnyvale',
     mobility_level: 'easy', vegetarian_friendly: true,
     best_time: 'Lunch 11:30am–3pm for best service',
-    accessibility_notes: 'Accessible entrance, accommodates dietary restrictions',
+    accessibility_notes: 'Accessible entrance, step-free, accommodates dietary restrictions',
+    languages_spoken: ['Tamil', 'Telugu', 'Kannada', 'Hindi'],
     is_verified: true, source_url: '', created_at: '', updated_at: '',
   },
   {
     id: '6', name: 'Shoreline at Mountain View', category: 'nature',
-    description: 'Flat paved trails around a beautiful lake. Excellent birdwatching.',
+    description: 'Flat paved trails around a beautiful lake. Excellent birdwatching and picnic spots.',
     address: '3070 N Shoreline Blvd, Mountain View, CA 94043', city: 'Mountain View',
+    lat: 37.4268, lng: -122.0798,
     google_maps_url: 'https://maps.google.com/?q=Shoreline+Park+Mountain+View',
     mobility_level: 'easy', vegetarian_friendly: false,
     best_time: 'Early morning or late afternoon',
@@ -98,7 +113,9 @@ export default function ActivitiesPage() {
   const [category, setCategory] = useState<PlaceCategory | 'all'>('all');
   const [mobility, setMobility] = useState<MobilityLevel | 'all'>('all');
   const [vegOnly, setVegOnly] = useState(false);
+  const [language, setLanguage] = useState('All languages');
   const [search, setSearch] = useState('');
+  const [view, setView] = useState<'list' | 'map'>('list');
 
   useEffect(() => {
     const load = async () => {
@@ -123,23 +140,47 @@ export default function ActivitiesPage() {
     load();
   }, [category, mobility, vegOnly]);
 
-  const filtered = places.filter(p =>
-    !search || p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.description?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = places.filter(p => {
+    if (search && !p.name.toLowerCase().includes(search.toLowerCase()) &&
+        !p.description?.toLowerCase().includes(search.toLowerCase())) return false;
+    if (language !== 'All languages' && !p.languages_spoken?.includes(language)) return false;
+    return true;
+  });
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">🗺️ Activities & Places</h1>
-        <p className="text-gray-500">Curated for visiting parents — filtered by mobility, diet, and interests.</p>
+        <p className="text-gray-500">Curated for visiting parents — filter by mobility, diet, language, and more.</p>
       </div>
 
       {/* Filters */}
       <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-6 space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
-          <Filter size={16} /> Filters
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
+            <Filter size={16} /> Filters
+          </div>
+          {/* List / Map toggle */}
+          <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+            <button
+              onClick={() => setView('list')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                view === 'list' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <LayoutList size={15} /> List
+            </button>
+            <button
+              onClick={() => setView('map')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                view === 'map' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Map size={15} /> Map
+            </button>
+          </div>
         </div>
+
         {/* Search */}
         <input
           type="text"
@@ -148,6 +189,7 @@ export default function ActivitiesPage() {
           onChange={e => setSearch(e.target.value)}
           className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
         />
+
         {/* Category chips */}
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map(c => (
@@ -164,8 +206,10 @@ export default function ActivitiesPage() {
             </button>
           ))}
         </div>
-        {/* Mobility + veg row */}
+
+        {/* Mobility + Veg + Language row */}
         <div className="flex flex-wrap items-center gap-3">
+          {/* Mobility */}
           <div className="flex gap-2">
             {MOBILITY.map(m => (
               <button
@@ -179,15 +223,31 @@ export default function ActivitiesPage() {
               </button>
             ))}
           </div>
-          <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 ml-auto">
+
+          {/* Veg toggle */}
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600">
             <input
               type="checkbox"
               checked={vegOnly}
               onChange={e => setVegOnly(e.target.checked)}
               className="w-4 h-4 accent-orange-500"
             />
-            <Leaf size={14} className="text-green-600" /> Vegetarian-friendly only
+            <Leaf size={14} className="text-green-600" /> Veg only
           </label>
+
+          {/* Language filter */}
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-xs text-gray-500">🗣️ Language:</span>
+            <select
+              value={language}
+              onChange={e => setLanguage(e.target.value)}
+              className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white text-gray-700"
+            >
+              {LANGUAGES.map(l => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -205,11 +265,17 @@ export default function ActivitiesPage() {
       ) : (
         <>
           <p className="text-sm text-gray-500 mb-4">{filtered.length} places found</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map(place => (
-              <PlaceCard key={place.id} place={place} />
-            ))}
-          </div>
+
+          {view === 'map' ? (
+            <MapView places={filtered} />
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filtered.map(place => (
+                <PlaceCard key={place.id} place={place} />
+              ))}
+            </div>
+          )}
+
           {filtered.length === 0 && (
             <div className="text-center py-16 text-gray-400">
               <p className="text-4xl mb-3">🔍</p>
@@ -250,6 +316,11 @@ function PlaceCard({ place }: { place: Place }) {
       </div>
       <h3 className="font-semibold text-gray-800 mb-1.5 leading-snug">{place.name}</h3>
       <p className="text-gray-500 text-sm leading-relaxed flex-1 mb-3">{place.description}</p>
+      {place.languages_spoken && place.languages_spoken.length > 0 && (
+        <p className="flex items-start gap-1.5 text-xs text-indigo-600 mb-2">
+          🗣️ {place.languages_spoken.join(', ')}
+        </p>
+      )}
       {place.address && (
         <p className="flex items-start gap-1.5 text-xs text-gray-400 mb-2">
           <MapPin size={12} className="mt-0.5 flex-shrink-0" />
