@@ -11,7 +11,7 @@
 
 Discover temples, parks, senior groups, visitor insurance information, healthcare resources, and connect with other families in your community.
 
-**[Live Demo](https://paahuney.vercel.app)** · [Report Bug](https://github.com/your-username/paahuney/issues) · [Request Feature](https://github.com/your-username/paahuney/issues)
+**[Live Demo](https://paahuney.vercel.app)** · [Report Bug](https://github.com/awesomefunda/Paahuney/issues) · [Request Feature](https://github.com/awesomefunda/Paahuney/issues)
 
 ---
 
@@ -25,7 +25,7 @@ Discover temples, parks, senior groups, visitor insurance information, healthcar
 - 📱 **Mobile-Responsive Design** — Works seamlessly on all devices
 - 🔐 **Privacy-First** — Open source, no tracking, no ads
 
-**Tech Stack:** Next.js 14 · React 19 · TypeScript · Supabase (PostgreSQL) · Tailwind CSS · Vercel
+**Tech Stack:** Next.js 16 · React 19 · TypeScript · Supabase (PostgreSQL) · Tailwind CSS · Vercel
 
 ---
 
@@ -178,7 +178,7 @@ We welcome contributions! This is a community-driven project, and we'd love your
 1. **Fork the repository** on GitHub
 2. **Clone your fork:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/paahuney.git
+   git clone https://github.com/awesomefunda/Paahuney.git
    cd paahuney
    ```
 3. **Create a feature branch:**
@@ -210,7 +210,7 @@ We welcome contributions! This is a community-driven project, and we'd love your
 
 ### Reporting Issues
 
-Found a bug? [Open an issue](https://github.com/YOUR_USERNAME/paahuney/issues) with:
+Found a bug? [Open an issue](https://github.com/awesomefunda/Paahuney/issues) with:
 - Clear description of the problem
 - Steps to reproduce
 - Expected vs actual behavior
@@ -248,7 +248,7 @@ npm run dev
 - Verify all environment variables are set in Vercel dashboard
 - Confirm Supabase project is still active
 
-Need more help? [Open a discussion](https://github.com/YOUR_USERNAME/paahuney/discussions) or see [Supabase docs](https://supabase.com/docs).
+Need more help? [Open a discussion](https://github.com/awesomefunda/Paahuney/discussions) or see [Supabase docs](https://supabase.com/docs).
 
 ---
 
@@ -324,7 +324,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ## ✍️ Authors
 
-- **[Your Name]** — Creator & Lead Developer ([GitHub](https://github.com/YOUR_USERNAME))
+- *[Harsh Kumar]]** — Creator & Lead Developer ([GitHub](https://github.com/awesomefunda))
 
 ---
 
@@ -340,8 +340,8 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ## 💬 Support & Community
 
-- **Discussions:** [GitHub Discussions](https://github.com/YOUR_USERNAME/paahuney/discussions)
-- **Issues:** [GitHub Issues](https://github.com/YOUR_USERNAME/paahuney/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/awesomefunda/Paahuney/discussions)
+- **Issues:** [GitHub Issues](https://github.com/awesomefunda/Paahuney/issues)
 - **Email:** [your-email@example.com]
 
 ---
@@ -350,6 +350,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 Built with ❤️ for immigrant families in the Bay Area
 
-**[Star this repo](https://github.com/YOUR_USERNAME/paahuney) if you find it helpful!** ⭐
+**[Star this repo](https://github.com/awesomefunda/Paahuney) if you find it helpful!** ⭐
 
 </div>

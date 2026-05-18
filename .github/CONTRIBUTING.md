@@ -10,7 +10,7 @@ This project and everyone participating in it is governed by our [Code of Conduc
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the [issue list](https://github.com/YOUR_USERNAME/paahuney/issues) as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+Before creating bug reports, please check the [issue list](https://github.com/awesomefunda/Paahuney/issues) as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
 
 - **Use a clear and descriptive title**
 - **Describe the exact steps which reproduce the problem**
@@ -22,7 +22,7 @@ Before creating bug reports, please check the [issue list](https://github.com/YO
 
 ### Suggesting Enhancements
 
-Enhancement suggestions are tracked as [GitHub issues](https://github.com/YOUR_USERNAME/paahuney/issues). When creating an enhancement suggestion, please include:
+Enhancement suggestions are tracked as [GitHub issues](https://github.com/awesomefunda/Paahuney/issues). When creating an enhancement suggestion, please include:
 
 - **Use a clear and descriptive title**
 - **Provide a step-by-step description of the suggested enhancement**
@@ -96,7 +96,7 @@ Before submitting a pull request:
 
 ## Questions?
 
-Feel free to open a [GitHub discussion](https://github.com/YOUR_USERNAME/paahuney/discussions) if you have questions!
+Feel free to open a [GitHub discussion](https://github.com/awesomefunda/Paahuney/discussions) if you have questions!
 
 ---
 
